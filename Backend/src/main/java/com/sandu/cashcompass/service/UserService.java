@@ -14,9 +14,9 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
-    public ResponseEntity<User> register(User newUser) {
-        if(repository.findByUserName(newUser.getUsername()) != null && repository.findByEmail(newUser.getEmail()) != null) {
-            return new ResponseEntity<>(HttpStatus.SEE_OTHER);
+    public ResponseEntity register(User newUser) {
+        if(repository.findByEmail(newUser.getEmail()) != null) {
+            return new ResponseEntity<>("You have an existing account",HttpStatus.SEE_OTHER);
         }
         try {
             String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
@@ -35,20 +35,23 @@ public class UserService {
         return new ResponseEntity<>(newUser ,HttpStatus.CREATED);
     }
 
-    public ResponseEntity<User> login(User user) {
+    public ResponseEntity login(User user) {
         User exist = repository.findByEmail(user.getEmail());
         if (exist == null) {
-            return new ResponseEntity<>(user, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
         }
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         if (passwordEncoder.matches(user.getPassword(), exist.getPassword())) {
             return new ResponseEntity<>(exist, HttpStatus.ACCEPTED);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>("Email or Password is Invalid" ,HttpStatus.NOT_ACCEPTABLE);
     }
 
     public ResponseEntity<User> deleteAcc(User user) {
-        User exist = repository.findByUserName(user.getUsername());
+        User exist = repository.findByEmail(user.getEmail());
+        if(exist == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         if (passwordEncoder.matches(user.getPassword(), exist.getPassword())) {
             repository.deleteById(exist.getId());
