@@ -4,5 +4,5 @@ import com.sandu.cashcompass.model.MonthReport;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface MonthReportRepository extends MongoRepository<MonthReport , String > {
-    //
+    public MonthReport findByMonth(int month);
 }

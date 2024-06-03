@@ -16,7 +16,7 @@ public class MonthReport {
     @Id
     private String id;
 
-    private  String month;
+    private  int month;
     private float total;
     private float totalSpends;
     private float totalIncome;
@@ -26,14 +26,14 @@ public class MonthReport {
 
     //methods
 
-    public void initializer(float amount) {
+    public void initializer(int month) {
         this.transactions = new ArrayList<>();
-        this.month = LocalDate.now().getMonth().toString();
-        setAmount(amount);
+        this.month = month;
+        setAmount();
     }
 
-    public void setAmount(float amount) {
-        this.total = amount;
+    public void setAmount() {
+        this.total = 0;
     }
 
     public void updateTotal(float amount , boolean isExpense) {
