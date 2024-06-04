@@ -16,8 +16,8 @@ public class MonthReportController {
     private MonthReportService service;
 
     @GetMapping("initialize")
-    public ResponseEntity<MonthReport> initializer(@RequestParam int month) {
-        return service.initializer(month);
+    public ResponseEntity<MonthReport> initializer(@RequestParam int month , @RequestParam String userId) {
+        return service.initializer(month , userId);
     }
 
 }

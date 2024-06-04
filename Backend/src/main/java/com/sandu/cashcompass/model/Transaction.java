@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import java.util.Date;
+
+import java.time.LocalDate;
 
 @Document("Transactions")
 @Getter
@@ -13,10 +14,11 @@ public class Transaction {
     @Id
     private String id;
 
+    private String userId;
     private float amount;
     private String transactionType;
     private String reason;
-    private Date date;
+    private LocalDate date;
     private String counterparty;
     private boolean isExpense;
 }

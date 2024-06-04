@@ -16,6 +16,7 @@ public class MonthReport {
     @Id
     private String id;
 
+    private String userId;
     private  int month;
     private float total;
     private float totalSpends;
