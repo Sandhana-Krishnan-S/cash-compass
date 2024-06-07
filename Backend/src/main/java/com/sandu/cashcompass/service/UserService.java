@@ -27,7 +27,6 @@ public class UserService {
             PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
             String hashedPassword  = passwordEncoder.encode(newUser.getPassword());
             newUser.setPassword(hashedPassword);
-            newUser.initializer();
             repository.save(newUser);
         } catch (Exception err) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

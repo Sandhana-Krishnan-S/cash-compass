@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping("api/month/report/")
 public class MonthReportController {
@@ -16,8 +18,8 @@ public class MonthReportController {
     private MonthReportService service;
 
     @GetMapping("initialize")
-    public ResponseEntity<MonthReport> initializer(@RequestParam int month , @RequestParam String userId) {
-        return service.initializer(month , userId);
+    public ResponseEntity<MonthReport> initializer(@RequestParam LocalDate date, @RequestParam String userId) {
+        return service.initializer(date , userId);
     }
 
 }

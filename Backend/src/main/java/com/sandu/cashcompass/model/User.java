@@ -19,9 +19,4 @@ public class User {
     private String username;
     private String email;
     private String password;
-    List<Reports> reportsList;
-
-    public void initializer() {
-       this.reportsList = new ArrayList<>();
-    }
 }

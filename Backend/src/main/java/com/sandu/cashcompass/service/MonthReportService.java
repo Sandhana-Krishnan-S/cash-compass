@@ -9,15 +9,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 
 @Service
 public class MonthReportService {
     @Autowired
     private MonthReportRepository repository;
 
+    @Autowired
+    private ReportsService reportsService;
 
-    public ResponseEntity<MonthReport> initializer(int month , String userId) {
+
+    public ResponseEntity<MonthReport> initializer(LocalDate date , String userId) {
+        int month = date.getMonthValue();
+        int year = date.getYear();
         if(month > 12 || month < 1) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -29,28 +33,41 @@ public class MonthReportService {
         report.setUserId(userId);
         report.initializer(month);
 
-        //TODO : Add this to Reports
+        //Add Month to Reports
+        if(!reportsService.addNewMonth(month , report , userId , year)) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            repository.save(report);
+            return new ResponseEntity<>(report , HttpStatus.CREATED);
+        }
 
-        repository.save(report);
-        return new ResponseEntity<>(report , HttpStatus.CREATED);
     }
 
     //Method : Add Transaction to month Report
     public boolean addTransaction(Transaction transaction , String userId) {
         try {
             int month = transaction.getDate().getMonthValue();
+            int year = transaction.getDate().getYear();
             if(month > 12 || month < 1) {
                 return false;
             }
             MonthReport report = repository.findByMonthAndUserId(month , transaction.getUserId());
             if(report == null) {
-                initializer(month , userId);
-                report = repository.findByMonthAndUserId(month , userId);
+                initializer(transaction.getDate() , userId);
+            }
+            report = repository.findByMonthAndUserId(month , userId);
+            if (report == null) {
+                System.out.println("Kill");
             }
             report.addTransaction(transaction);
             report.updateTotal(transaction.getAmount() , transaction.isExpense());
-            repository.save(report);
-            return true;
+            //Update Month to report
+            if(reportsService.UpdateMonth(userId , report , year)) {
+                repository.save(report);
+                return true;
+            }
+            System.out.println("I sent");
+            return false;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return false;

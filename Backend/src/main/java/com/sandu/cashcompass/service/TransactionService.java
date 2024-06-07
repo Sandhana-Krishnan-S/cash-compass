@@ -35,6 +35,7 @@ public class TransactionService {
         if(monthReportService.addTransaction(transaction , userId)) {
             return new ResponseEntity<>(repository.save(transaction) , HttpStatus.OK);
         }
+        System.out.println("On Last Step");
         return new ResponseEntity<>(HttpStatus.REQUEST_TIMEOUT);
     }
 }
