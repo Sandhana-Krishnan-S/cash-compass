@@ -14,6 +14,9 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
+    @Autowired
+    private TransactionService transactionService;
+
     public ResponseEntity register(User newUser) {
         if(repository.findByEmail(newUser.getEmail()) != null) {
             return new ResponseEntity<>("You have an existing account",HttpStatus.SEE_OTHER);
@@ -53,8 +56,11 @@ public class UserService {
         }
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         if (passwordEncoder.matches(user.getPassword(), exist.getPassword())) {
-            repository.deleteById(exist.getId());
-            return new ResponseEntity<>(HttpStatus.OK);
+            if(transactionService.deleteAll(exist.getId())) {
+                repository.deleteById(exist.getId());
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.REQUEST_TIMEOUT);
         }
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }

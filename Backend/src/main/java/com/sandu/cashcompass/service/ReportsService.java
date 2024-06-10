@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ReportsService {
     @Autowired
@@ -57,6 +59,16 @@ public class ReportsService {
             return true;
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean deleteAll(String userId) {
+        try {
+            repository.deleteAllByUserId(userId);
+            List<Reports> reports = repository.findAllByUserId(userId);
+            return reports.isEmpty();
+        } catch (Exception e) {
             return false;
         }
     }

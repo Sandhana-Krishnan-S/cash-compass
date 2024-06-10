@@ -56,9 +56,8 @@ public class MonthReportService {
                 initializer(transaction.getDate() , userId);
             }
             report = repository.findByMonthAndUserId(month , userId);
-            if (report == null) {
-                System.out.println("Kill");
-            }
+
+            assert report != null;
             report.addTransaction(transaction);
             report.updateTotal(transaction.getAmount() , transaction.isExpense());
             //Update Month to report
@@ -72,5 +71,14 @@ public class MonthReportService {
             System.out.println(e.getMessage());
             return false;
         }
+    }
+
+    public boolean deleteAll(String userId) {
+       try {
+           repository.deleteAllByUserId(userId);
+           return reportsService.deleteAll(userId);
+       } catch (Exception e) {
+           return false;
+       }
     }
 }

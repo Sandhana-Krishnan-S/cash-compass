@@ -38,4 +38,13 @@ public class TransactionService {
         System.out.println("On Last Step");
         return new ResponseEntity<>(HttpStatus.REQUEST_TIMEOUT);
     }
+
+    public boolean deleteAll(String userId) {
+        try {
+            repository.deleteAllByUserId(userId);
+            return monthReportService.deleteAll(userId);
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

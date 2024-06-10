@@ -7,4 +7,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories
 public interface MonthReportRepository extends MongoRepository<MonthReport , String > {
     public MonthReport findByMonthAndUserId(int month , String userId);
+
+    void deleteAllByUserId(String userId);
 }
